@@ -192,8 +192,12 @@ export function generateDungeonRoomsMaze(params: MazeGenerationParams): MazeGrid
   const serpentine = huntOrderOf(params) === mazeHuntOrders.serpentine
   const grid = createFilledWalls(algo.hallwayWidth, algo.hallwayHeight)
 
-  for (const room of rooms) {
-    if (!isInsideGrid(room, grid)) continue
+  for (const [index, room] of rooms.entries()) {
+    if (!isInsideGrid(room, grid)) {
+      throw new Error(
+        `Room ${index + 1} bounds (${room.minX}, ${room.minY})–(${room.maxX}, ${room.maxY}) do not fit the ${grid.width}×${grid.height} grid.`,
+      )
+    }
     carveRoom(room, grid)
     carveDoor(room, grid, algo.random)
   }

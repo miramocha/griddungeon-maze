@@ -113,6 +113,16 @@ describe('golden mazes', () => {
     expect(reachableOpenCount(grid)).toBe(openCount(grid))
   })
 
+  it('rejects a dungeon room outside the grid', () => {
+    expect(() =>
+      generateMaze({
+        ...hallway,
+        algorithmId: mazeGeneratorIds.dungeonRooms,
+        rooms: [{ minX: 1, minY: 1, maxX: 100, maxY: 100 }],
+      }),
+    ).toThrow(/do not fit the 17×13 grid/)
+  })
+
   it('matches explicit dungeon rooms', () => {
     const grid = generateMaze({
       ...hallway,

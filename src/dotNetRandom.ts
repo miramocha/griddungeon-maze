@@ -3,6 +3,8 @@
 
 const mbig = 2147483647
 const mseed = 161803398
+const int32Min = -2147483648
+const int32Max = 2147483647
 
 export type DotNetRandom = {
   next(): number
@@ -12,8 +14,11 @@ export type DotNetRandom = {
 }
 
 export function createDotNetRandom(seed: number): DotNetRandom {
+  if (!Number.isInteger(seed) || seed < int32Min || seed > int32Max) {
+    throw new Error('Seed must be a 32-bit integer.')
+  }
   const seedArray = new Int32Array(56)
-  const subtraction = seed === -2147483648 ? mbig : Math.abs(seed)
+  const subtraction = seed === int32Min ? mbig : Math.abs(seed)
   let mj = mseed - subtraction
   seedArray[55] = mj
   let mk = 1

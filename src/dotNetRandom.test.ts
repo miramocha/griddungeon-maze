@@ -15,6 +15,13 @@ describe('dotNetRandom', () => {
       expect(random.nextDouble()).toBe(Number(value))
     }
   })
+
+  it('rejects a seed outside int32', () => {
+    expect(() => createDotNetRandom(2147483648)).toThrow(/32-bit integer/)
+    expect(() => createDotNetRandom(-2147483649)).toThrow(/32-bit integer/)
+    expect(() => createDotNetRandom(1.5)).toThrow(/32-bit integer/)
+    expect(() => createDotNetRandom(-2147483648)).not.toThrow()
+  })
 })
 
 describe('int pair set', () => {
