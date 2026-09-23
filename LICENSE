@@ -1,0 +1,4 @@
+Maze algorithms and transmuters are adapted from mazelib
+(https://github.com/john-science/mazelib), which is licensed under the MIT License.
+
+The TypeScript port follows GridDungeon.Core MapGeneration.
