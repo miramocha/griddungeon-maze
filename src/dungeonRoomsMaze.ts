@@ -12,9 +12,9 @@ import {
   type MazeAlgo,
 } from './mazeGenAlgo.ts'
 import { createSeededRandom, huntOrderOf, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { mazeHuntOrders } from './mazeHuntOrder.ts'
+import { MAZE_HUNT_ORDERS } from './mazeHuntOrder.ts'
 import { physicalHeight, physicalWidth } from './mazeHallway.ts'
-import { createFilledWalls, isOpen, isWall, mazeOpen, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createFilledWalls, isOpen, isWall, MAZE_OPEN, setCell, type MazeGrid } from './mazeGrid.ts'
 import type { MazeRoomRect } from './mazeRoomRect.ts'
 
 function createDefaultRooms(hallwayWidth: number, hallwayHeight: number, random: DotNetRandom): MazeRoomRect[] {
@@ -56,7 +56,7 @@ function isInsideGrid(room: MazeRoomRect, grid: MazeGrid): boolean {
 
 function carveRoom(room: MazeRoomRect, grid: MazeGrid): void {
   for (let y = room.minY; y <= room.maxY; y += 1) {
-    for (let x = room.minX; x <= room.maxX; x += 1) setCell(grid, x, y, mazeOpen)
+    for (let x = room.minX; x <= room.maxX; x += 1) setCell(grid, x, y, MAZE_OPEN)
   }
 }
 
@@ -79,7 +79,7 @@ function carveDoor(room: MazeRoomRect, grid: MazeGrid, random: DotNetRandom): vo
   if (room.maxX < grid.width - 2) for (const y of oddYs) doors.push({ x: room.maxX + 1, y })
   if (doors.length === 0) return
   const door = doors[random.nextMax(doors.length)] as Cell
-  setCell(grid, door.x, door.y, mazeOpen)
+  setCell(grid, door.x, door.y, MAZE_OPEN)
 }
 
 function findUnblocked(algo: MazeAlgo, grid: MazeGrid, x: number, y: number): Cell[] {
@@ -169,7 +169,7 @@ function fixDisjointPassages(algo: MazeAlgo, grid: MazeGrid, disjointPassages: I
             grid,
             Math.trunc((neighbor.x + cell.x) / 2),
             Math.trunc((neighbor.y + cell.y) / 2),
-            mazeOpen,
+            MAZE_OPEN,
           )
           first.unionWith(passage)
           disjointPassages.splice(passageIndex, 1)
@@ -189,7 +189,7 @@ export function generateDungeonRoomsMaze(params: MazeGenerationParams): MazeGrid
       ? params.rooms
       : createDefaultRooms(params.hallwayWidth, params.hallwayHeight, random)
   const algo = createMazeAlgo(params.hallwayWidth, params.hallwayHeight, random)
-  const serpentine = huntOrderOf(params) === mazeHuntOrders.serpentine
+  const serpentine = huntOrderOf(params) === MAZE_HUNT_ORDERS.serpentine
   const grid = createFilledWalls(algo.hallwayWidth, algo.hallwayHeight)
 
   for (const [index, room] of rooms.entries()) {
@@ -212,7 +212,7 @@ export function generateDungeonRoomsMaze(params: MazeGenerationParams): MazeGrid
     }
   }
   if (current.x < 0) throw new Error('DungeonRooms could not find a wall cell outside carved rooms.')
-  setCell(grid, current.x, current.y, mazeOpen)
+  setCell(grid, current.x, current.y, MAZE_OPEN)
 
   let huntTrials = 0
   while (current.x >= 0) {
@@ -222,7 +222,7 @@ export function generateDungeonRoomsMaze(params: MazeGenerationParams): MazeGrid
       let unvisited = findNeighbors(algo, x, y, grid, true)
       while (unvisited.length > 0) {
         const neighbor = unvisited[0] as Cell
-        setCell(grid, neighbor.x, neighbor.y, mazeOpen)
+        setCell(grid, neighbor.x, neighbor.y, MAZE_OPEN)
         carvePassageBetween(x, y, neighbor.x, neighbor.y, grid)
         x = neighbor.x
         y = neighbor.y

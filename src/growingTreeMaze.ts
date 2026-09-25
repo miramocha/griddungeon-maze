@@ -9,7 +9,7 @@ import {
   randomOddCorridorCell,
 } from './mazeGenAlgo.ts'
 import { clamp01f, createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createFilledWalls, mazeOpen, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createFilledWalls, MAZE_OPEN, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function removeActiveCell(active: Cell[], x: number, y: number): void {
   for (let i = active.length - 1; i >= 0; i -= 1) {
@@ -23,7 +23,7 @@ export function generateGrowingTreeMaze(params: MazeGenerationParams): MazeGrid 
   const backtrackChance = clamp01f(params.backtrackChance ?? 1)
   const grid = createFilledWalls(algo.hallwayWidth, algo.hallwayHeight)
   let current = randomOddCorridorCell(algo)
-  setCell(grid, current.x, current.y, mazeOpen)
+  setCell(grid, current.x, current.y, MAZE_OPEN)
   const active: Cell[] = [current]
 
   while (active.length > 0) {
@@ -39,7 +39,7 @@ export function generateGrowingTreeMaze(params: MazeGenerationParams): MazeGrid 
     }
     const next = nextNeighbors[algo.random.nextMax(nextNeighbors.length)] as Cell
     active.push(next)
-    setCell(grid, next.x, next.y, mazeOpen)
+    setCell(grid, next.x, next.y, MAZE_OPEN)
     carvePassageBetween(current.x, current.y, next.x, next.y, grid)
   }
   return grid

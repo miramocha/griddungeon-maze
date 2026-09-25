@@ -1,12 +1,12 @@
 // Legacy System.Random(int) subtractive generator (Knuth). Matches `new Random(seed)`
 // on .NET, including the seeded constructor kept for compatibility after .NET 6.
 
-const mbig = 2147483647
-const mseed = 161803398
-const int32Min = -2147483648
-const int32Max = 2147483647
+const MBIG = 2147483647
+const MSEED = 161803398
+const INT32_MIN = -2147483648
+const INT32_MAX = 2147483647
 
-export type DotNetRandom = {
+export interface DotNetRandom {
   next(): number
   nextMax(maxValue: number): number
   nextRange(minValue: number, maxValue: number): number
@@ -14,25 +14,25 @@ export type DotNetRandom = {
 }
 
 export function createDotNetRandom(seed: number): DotNetRandom {
-  if (!Number.isInteger(seed) || seed < int32Min || seed > int32Max) {
+  if (!Number.isInteger(seed) || seed < INT32_MIN || seed > INT32_MAX) {
     throw new Error('Seed must be a 32-bit integer.')
   }
   const seedArray = new Int32Array(56)
-  const subtraction = seed === int32Min ? mbig : Math.abs(seed)
-  let mj = mseed - subtraction
+  const subtraction = seed === INT32_MIN ? MBIG : Math.abs(seed)
+  let mj = MSEED - subtraction
   seedArray[55] = mj
   let mk = 1
   for (let i = 1; i < 55; i += 1) {
     const ii = (21 * i) % 55
     seedArray[ii] = mk
     mk = mj - mk
-    if (mk < 0) mk += mbig
+    if (mk < 0) mk += MBIG
     mj = seedArray[ii]!
   }
   for (let k = 1; k < 5; k += 1) {
     for (let i = 1; i < 56; i += 1) {
       seedArray[i] = (seedArray[i] ?? 0) - (seedArray[1 + ((i + 30) % 55)] ?? 0)
-      if ((seedArray[i] ?? 0) < 0) seedArray[i] = (seedArray[i] ?? 0) + mbig
+      if ((seedArray[i] ?? 0) < 0) seedArray[i] = (seedArray[i] ?? 0) + MBIG
     }
   }
   let inext = 0
@@ -46,8 +46,8 @@ export function createDotNetRandom(seed: number): DotNetRandom {
     locINextp += 1
     if (locINextp >= 56) locINextp = 1
     let retVal = (seedArray[locINext] ?? 0) - (seedArray[locINextp] ?? 0)
-    if (retVal === mbig) retVal -= 1
-    if (retVal < 0) retVal += mbig
+    if (retVal === MBIG) retVal -= 1
+    if (retVal < 0) retVal += MBIG
     seedArray[locINext] = retVal
     inext = locINext
     inextp = locINextp
@@ -55,7 +55,7 @@ export function createDotNetRandom(seed: number): DotNetRandom {
   }
 
   function sample(): number {
-    return internalSample() * (1 / mbig)
+    return internalSample() * (1 / MBIG)
   }
 
   return {

@@ -2,9 +2,12 @@
 // in add order when cells are only added or unioned (no removals). Verified
 // against dotnet 10.0.11.
 
-export type Cell = { readonly x: number; readonly y: number }
+export interface Cell {
+  readonly x: number
+  readonly y: number
+}
 
-export type IntPairSet = {
+export interface IntPairSet {
   size: number
   add(x: number, y: number): void
   has(x: number, y: number): boolean

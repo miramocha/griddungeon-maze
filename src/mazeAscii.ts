@@ -1,12 +1,12 @@
-import { fromPhysicalDimensions, isWall, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { fromPhysicalDimensions, isWall, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
-export const defaultWallChar = '#'
-export const defaultOpenChar = '.'
+export const DEFAULT_WALL_CHAR = '#'
+export const DEFAULT_OPEN_CHAR = '.'
 
 export function toAsciiRows(
   grid: MazeGrid,
-  wallChar = defaultWallChar,
-  openChar = defaultOpenChar,
+  wallChar = DEFAULT_WALL_CHAR,
+  openChar = DEFAULT_OPEN_CHAR,
 ): string[] {
   const rows: string[] = []
   for (let rowFromNorth = 0; rowFromNorth < grid.height; rowFromNorth += 1) {
@@ -22,16 +22,16 @@ export function toAsciiRows(
 
 export function toAscii(
   grid: MazeGrid,
-  wallChar = defaultWallChar,
-  openChar = defaultOpenChar,
+  wallChar = DEFAULT_WALL_CHAR,
+  openChar = DEFAULT_OPEN_CHAR,
 ): string {
   return toAsciiRows(grid, wallChar, openChar).join('\n')
 }
 
 export function fromNorthUpRows(
   rowsNorthUp: readonly string[],
-  wallChar = defaultWallChar,
-  openChar = defaultOpenChar,
+  wallChar = DEFAULT_WALL_CHAR,
+  openChar = DEFAULT_OPEN_CHAR,
 ): MazeGrid {
   if (rowsNorthUp.length === 0) throw new Error('At least one row is required.')
   const height = rowsNorthUp.length
@@ -49,7 +49,7 @@ export function fromNorthUpRows(
       if (cell !== wallChar && cell !== openChar) {
         throw new Error(`Unexpected character '${cell}' at row ${row}, column ${x}.`)
       }
-      setCell(grid, x, y, cell === wallChar ? mazeWall : mazeOpen)
+      setCell(grid, x, y, cell === wallChar ? MAZE_WALL : MAZE_OPEN)
     }
   }
   return grid

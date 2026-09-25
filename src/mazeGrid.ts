@@ -3,10 +3,10 @@
 
 import { physicalHeight, physicalWidth } from './mazeHallway.ts'
 
-export const mazeWall = 1
-export const mazeOpen = 0
+export const MAZE_WALL = 1
+export const MAZE_OPEN = 0
 
-export type MazeGrid = {
+export interface MazeGrid {
   hallwayWidth: number
   hallwayHeight: number
   width: number
@@ -30,7 +30,7 @@ export function createMazeGrid(hallwayWidth: number, hallwayHeight: number): Maz
 
 export function createFilledWalls(hallwayWidth: number, hallwayHeight: number): MazeGrid {
   const grid = createMazeGrid(hallwayWidth, hallwayHeight)
-  fill(grid, mazeWall)
+  fill(grid, MAZE_WALL)
   return grid
 }
 
@@ -59,11 +59,11 @@ export function setCell(grid: MazeGrid, x: number, y: number, value: number): vo
 }
 
 export function isWall(grid: MazeGrid, x: number, y: number): boolean {
-  return getCell(grid, x, y) === mazeWall
+  return getCell(grid, x, y) === MAZE_WALL
 }
 
 export function isOpen(grid: MazeGrid, x: number, y: number): boolean {
-  return getCell(grid, x, y) === mazeOpen
+  return getCell(grid, x, y) === MAZE_OPEN
 }
 
 function toIndex(grid: MazeGrid, x: number, y: number): number {

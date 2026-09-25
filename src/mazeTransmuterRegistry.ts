@@ -1,22 +1,22 @@
 import { transmuteCuldeSacFiller } from './culdeSacFiller.ts'
 import { transmuteDeadEndFiller } from './deadEndFiller.ts'
-import { mazeTransmuterIds } from './mazeIds.ts'
+import { MAZE_TRANSMUTER_IDS } from './mazeIds.ts'
 import type { MazeGrid } from './mazeGrid.ts'
 import type { MazeTransmutationParams } from './mazeTransmutationParams.ts'
 import { transmutePerturbation } from './perturbationMaze.ts'
 
-const transmuters = new Map<string, (grid: MazeGrid, params: MazeTransmutationParams) => void>([
-  [mazeTransmuterIds.culdeSacFiller, transmuteCuldeSacFiller],
-  [mazeTransmuterIds.deadEndFiller, transmuteDeadEndFiller],
-  [mazeTransmuterIds.perturbation, transmutePerturbation],
+const TRANSMUTERS = new Map<string, (grid: MazeGrid, params: MazeTransmutationParams) => void>([
+  [MAZE_TRANSMUTER_IDS.culdeSacFiller, transmuteCuldeSacFiller],
+  [MAZE_TRANSMUTER_IDS.deadEndFiller, transmuteDeadEndFiller],
+  [MAZE_TRANSMUTER_IDS.perturbation, transmutePerturbation],
 ])
 
 export function registeredTransmuterIds(): string[] {
-  return [...transmuters.keys()]
+  return [...TRANSMUTERS.keys()]
 }
 
 export function transmuteMaze(grid: MazeGrid, params: MazeTransmutationParams): void {
-  const transmuter = transmuters.get(params.transmuterId)
+  const transmuter = TRANSMUTERS.get(params.transmuterId)
   if (!transmuter) {
     throw new Error(`No maze transmuter registered for id '${params.transmuterId}'.`)
   }

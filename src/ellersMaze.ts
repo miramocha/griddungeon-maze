@@ -3,7 +3,7 @@
 
 import { createMazeAlgo, type MazeAlgo } from './mazeGenAlgo.ts'
 import { clamp01f, createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createMazeGrid, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createMazeGrid, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function at(sets: Int32Array, width: number, y: number, x: number): number {
   return sets[y * width + x] ?? -1
@@ -95,10 +95,10 @@ export function generateEllersMaze(params: MazeGenerationParams): MazeGrid {
   }
 
   const grid = createMazeGrid(algo.hallwayWidth, algo.hallwayHeight)
-  grid.cells.fill(mazeOpen)
+  grid.cells.fill(MAZE_OPEN)
   for (let y = 0; y < algo.physicalHeight; y += 1) {
     for (let x = 0; x < algo.physicalWidth; x += 1) {
-      if (at(sets, algo.physicalWidth, y, x) === -1) setCell(grid, x, y, mazeWall)
+      if (at(sets, algo.physicalWidth, y, x) === -1) setCell(grid, x, y, MAZE_WALL)
     }
   }
   return grid

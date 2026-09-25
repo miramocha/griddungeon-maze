@@ -4,12 +4,17 @@
 import type { DotNetRandom } from './dotNetRandom.ts'
 import { createMazeAlgo } from './mazeGenAlgo.ts'
 import { createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createMazeGrid, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createMazeGrid, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
-const vertical = 0
-const horizontal = 1
+const VERTICAL = 0
+const HORIZONTAL = 1
 
-type Region = { minY: number; minX: number; maxY: number; maxX: number }
+interface Region {
+  minY: number
+  minX: number
+  maxY: number
+  maxX: number
+}
 
 function randomOddInRange(random: DotNetRandom, minInclusive: number, maxInclusive: number): number {
   const span = Math.trunc((maxInclusive - minInclusive) / 2) + 1
@@ -23,14 +28,14 @@ function randomEvenInRange(random: DotNetRandom, minInclusive: number, maxInclus
 export function generateRecursiveDivisionMaze(params: MazeGenerationParams): MazeGrid {
   const algo = createMazeAlgo(params.hallwayWidth, params.hallwayHeight, createSeededRandom(params))
   const grid = createMazeGrid(algo.hallwayWidth, algo.hallwayHeight)
-  grid.cells.fill(mazeOpen)
+  grid.cells.fill(MAZE_OPEN)
   for (let x = 0; x < algo.physicalWidth; x += 1) {
-    setCell(grid, x, 0, mazeWall)
-    setCell(grid, x, algo.physicalHeight - 1, mazeWall)
+    setCell(grid, x, 0, MAZE_WALL)
+    setCell(grid, x, algo.physicalHeight - 1, MAZE_WALL)
   }
   for (let y = 0; y < algo.physicalHeight; y += 1) {
-    setCell(grid, 0, y, mazeWall)
-    setCell(grid, algo.physicalWidth - 1, y, mazeWall)
+    setCell(grid, 0, y, MAZE_WALL)
+    setCell(grid, algo.physicalWidth - 1, y, MAZE_WALL)
   }
 
   const regionStack: Region[] = [
@@ -43,30 +48,30 @@ export function generateRecursiveDivisionMaze(params: MazeGenerationParams): Maz
     if (height <= 1 || width <= 1) continue
 
     let cutDirection: number
-    if (width < height) cutDirection = horizontal
-    else if (width > height) cutDirection = vertical
+    if (width < height) cutDirection = HORIZONTAL
+    else if (width > height) cutDirection = VERTICAL
     else if (width === 2) continue
     else cutDirection = algo.random.nextMax(2)
 
-    const cutLength = cutDirection === vertical ? height : width
+    const cutLength = cutDirection === VERTICAL ? height : width
     if (cutLength < 3) continue
     const cutPosition = randomOddInRange(algo.random, 1, cutLength - 1)
     const doorPosition = randomEvenInRange(
       algo.random,
       0,
-      (cutDirection === vertical ? height : width) - 1,
+      (cutDirection === VERTICAL ? height : width) - 1,
     )
 
-    if (cutDirection === vertical) {
+    if (cutDirection === VERTICAL) {
       const wallX = region.minX + cutPosition
-      for (let y = region.minY; y <= region.maxY; y += 1) setCell(grid, wallX, y, mazeWall)
-      setCell(grid, wallX, region.minY + doorPosition, mazeOpen)
+      for (let y = region.minY; y <= region.maxY; y += 1) setCell(grid, wallX, y, MAZE_WALL)
+      setCell(grid, wallX, region.minY + doorPosition, MAZE_OPEN)
       regionStack.push({ minY: region.minY, minX: region.minX, maxY: region.maxY, maxX: wallX - 1 })
       regionStack.push({ minY: region.minY, minX: wallX + 1, maxY: region.maxY, maxX: region.maxX })
     } else {
       const wallY = region.minY + cutPosition
-      for (let x = region.minX; x <= region.maxX; x += 1) setCell(grid, x, wallY, mazeWall)
-      setCell(grid, region.minX + doorPosition, wallY, mazeOpen)
+      for (let x = region.minX; x <= region.maxX; x += 1) setCell(grid, x, wallY, MAZE_WALL)
+      setCell(grid, region.minX + doorPosition, wallY, MAZE_OPEN)
       regionStack.push({ minY: region.minY, minX: region.minX, maxY: wallY - 1, maxX: region.maxX })
       regionStack.push({ minY: wallY + 1, minX: region.minX, maxY: region.maxY, maxX: region.maxX })
     }

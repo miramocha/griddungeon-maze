@@ -6,7 +6,7 @@ import { generateDungeonRoomsMaze } from './dungeonRoomsMaze.ts'
 import { generateEllersMaze } from './ellersMaze.ts'
 import { generateGrowingTreeMaze } from './growingTreeMaze.ts'
 import { generateHuntAndKillMaze } from './huntAndKillMaze.ts'
-import { mazeGeneratorIds } from './mazeIds.ts'
+import { MAZE_GENERATOR_IDS } from './mazeIds.ts'
 import type { MazeGenerationParams } from './mazeGenerationParams.ts'
 import type { MazeGrid } from './mazeGrid.ts'
 import { generateKruskalsMaze } from './kruskalsMaze.ts'
@@ -15,28 +15,28 @@ import { generateRecursiveDivisionMaze } from './recursiveDivisionMaze.ts'
 import { generateSidewinderMaze } from './sidewinderMaze.ts'
 import { generateWilsonsMaze } from './wilsonsMaze.ts'
 
-const generators = new Map<string, (params: MazeGenerationParams) => MazeGrid>([
-  [mazeGeneratorIds.prims, generatePrimsMaze],
-  [mazeGeneratorIds.backtracking, generateBacktrackingMaze],
-  [mazeGeneratorIds.dungeonRooms, generateDungeonRoomsMaze],
-  [mazeGeneratorIds.binaryTree, generateBinaryTreeMaze],
-  [mazeGeneratorIds.sidewinder, generateSidewinderMaze],
-  [mazeGeneratorIds.growingTree, generateGrowingTreeMaze],
-  [mazeGeneratorIds.kruskals, generateKruskalsMaze],
-  [mazeGeneratorIds.ellers, generateEllersMaze],
-  [mazeGeneratorIds.huntAndKill, generateHuntAndKillMaze],
-  [mazeGeneratorIds.wilsons, generateWilsonsMaze],
-  [mazeGeneratorIds.aldousBroder, generateAldousBroderMaze],
-  [mazeGeneratorIds.recursiveDivision, generateRecursiveDivisionMaze],
-  [mazeGeneratorIds.cellularAutomaton, generateCellularAutomatonMaze],
+const GENERATORS = new Map<string, (params: MazeGenerationParams) => MazeGrid>([
+  [MAZE_GENERATOR_IDS.prims, generatePrimsMaze],
+  [MAZE_GENERATOR_IDS.backtracking, generateBacktrackingMaze],
+  [MAZE_GENERATOR_IDS.dungeonRooms, generateDungeonRoomsMaze],
+  [MAZE_GENERATOR_IDS.binaryTree, generateBinaryTreeMaze],
+  [MAZE_GENERATOR_IDS.sidewinder, generateSidewinderMaze],
+  [MAZE_GENERATOR_IDS.growingTree, generateGrowingTreeMaze],
+  [MAZE_GENERATOR_IDS.kruskals, generateKruskalsMaze],
+  [MAZE_GENERATOR_IDS.ellers, generateEllersMaze],
+  [MAZE_GENERATOR_IDS.huntAndKill, generateHuntAndKillMaze],
+  [MAZE_GENERATOR_IDS.wilsons, generateWilsonsMaze],
+  [MAZE_GENERATOR_IDS.aldousBroder, generateAldousBroderMaze],
+  [MAZE_GENERATOR_IDS.recursiveDivision, generateRecursiveDivisionMaze],
+  [MAZE_GENERATOR_IDS.cellularAutomaton, generateCellularAutomatonMaze],
 ])
 
 export function registeredAlgorithmIds(): string[] {
-  return [...generators.keys()]
+  return [...GENERATORS.keys()]
 }
 
 export function generateMaze(params: MazeGenerationParams): MazeGrid {
-  const generator = generators.get(params.algorithmId)
+  const generator = GENERATORS.get(params.algorithmId)
   if (!generator) {
     throw new Error(`No maze generator registered for algorithm id '${params.algorithmId}'.`)
   }

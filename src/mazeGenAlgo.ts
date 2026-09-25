@@ -4,11 +4,11 @@
 import type { DotNetRandom } from './dotNetRandom.ts'
 import type { Cell } from './intPairSet.ts'
 import { physicalHeight, physicalWidth, validateHallway } from './mazeHallway.ts'
-import { getCell, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { getCell, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
 export type { Cell }
 
-export type MazeAlgo = {
+export interface MazeAlgo {
   hallwayWidth: number
   hallwayHeight: number
   physicalWidth: number
@@ -47,7 +47,7 @@ export function findNeighbors(
   grid: MazeGrid,
   isWall: boolean,
 ): Cell[] {
-  const target = isWall ? mazeWall : mazeOpen
+  const target = isWall ? MAZE_WALL : MAZE_OPEN
   const neighbors: Cell[] = []
   if (y > 1 && getCell(grid, x, y - 2) === target) neighbors.push({ x, y: y - 2 })
   if (y < algo.physicalHeight - 2 && getCell(grid, x, y + 2) === target) {
@@ -75,5 +75,5 @@ export function carvePassageBetween(
   toY: number,
   grid: MazeGrid,
 ): void {
-  setCell(grid, Math.trunc((fromX + toX) / 2), Math.trunc((fromY + toY) / 2), mazeOpen)
+  setCell(grid, Math.trunc((fromX + toX) / 2), Math.trunc((fromY + toY) / 2), MAZE_OPEN)
 }

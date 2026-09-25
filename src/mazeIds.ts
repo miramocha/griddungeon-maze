@@ -1,4 +1,4 @@
-export const mazeGeneratorIds = {
+export const MAZE_GENERATOR_IDS = {
   prims: 'prims',
   backtracking: 'backtracking',
   dungeonRooms: 'dungeon-rooms',
@@ -14,11 +14,11 @@ export const mazeGeneratorIds = {
   cellularAutomaton: 'cellular-automaton',
 } as const
 
-export const mazeTransmuterIds = {
+export const MAZE_TRANSMUTER_IDS = {
   culdeSacFiller: 'cul-de-sac-filler',
   deadEndFiller: 'dead-end-filler',
   perturbation: 'perturbation',
 } as const
 
-export type MazeGeneratorId = (typeof mazeGeneratorIds)[keyof typeof mazeGeneratorIds]
-export type MazeTransmuterId = (typeof mazeTransmuterIds)[keyof typeof mazeTransmuterIds]
+export type MazeGeneratorId = (typeof MAZE_GENERATOR_IDS)[keyof typeof MAZE_GENERATOR_IDS]
+export type MazeTransmuterId = (typeof MAZE_TRANSMUTER_IDS)[keyof typeof MAZE_TRANSMUTER_IDS]

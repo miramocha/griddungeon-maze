@@ -1,9 +1,9 @@
 import { createDotNetRandom, type DotNetRandom } from './dotNetRandom.ts'
-import { mazeBinaryTreeSkews, type MazeBinaryTreeSkew } from './mazeBinaryTreeSkew.ts'
-import { mazeHuntOrders, type MazeHuntOrder } from './mazeHuntOrder.ts'
+import { MAZE_BINARY_TREE_SKEWS, type MazeBinaryTreeSkew } from './mazeBinaryTreeSkew.ts'
+import { MAZE_HUNT_ORDERS, type MazeHuntOrder } from './mazeHuntOrder.ts'
 import type { MazeRoomRect } from './mazeRoomRect.ts'
 
-export type MazeGenerationParams = {
+export interface MazeGenerationParams {
   seed?: number | null
   hallwayWidth: number
   hallwayHeight: number
@@ -27,11 +27,11 @@ export function createSeededRandom(params: MazeGenerationParams): DotNetRandom {
 }
 
 export function huntOrderOf(params: MazeGenerationParams): MazeHuntOrder {
-  return params.huntOrder ?? mazeHuntOrders.random
+  return params.huntOrder ?? MAZE_HUNT_ORDERS.random
 }
 
 export function binaryTreeSkewOf(params: MazeGenerationParams): MazeBinaryTreeSkew {
-  return params.binaryTreeSkew ?? mazeBinaryTreeSkews.northWest
+  return params.binaryTreeSkew ?? MAZE_BINARY_TREE_SKEWS.northWest
 }
 
 export function clamp01f(value: number): number {

@@ -1,6 +1,6 @@
 import { createDotNetRandom, type DotNetRandom } from './dotNetRandom.ts'
 
-export type MazeTransmutationParams = {
+export interface MazeTransmutationParams {
   seed?: number | null
   transmuterId: string
   deadEndIterations?: number

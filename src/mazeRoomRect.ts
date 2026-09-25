@@ -1,4 +1,4 @@
-export type MazeRoomRect = {
+export interface MazeRoomRect {
   minX: number
   minY: number
   maxX: number

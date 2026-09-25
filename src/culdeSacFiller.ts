@@ -4,7 +4,7 @@ import type { Cell } from './intPairSet.ts'
 import type { DotNetRandom } from './dotNetRandom.ts'
 import { findUnblockedNeighbors, isEndCell, isStartCell } from './mazeTransmuteAlgo.ts'
 import { createTransmuteRandom, type MazeTransmutationParams } from './mazeTransmutationParams.ts'
-import { isWall, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { isWall, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function tryFindNextIntersection(
   grid: MazeGrid,
@@ -53,7 +53,7 @@ export function transmuteCuldeSacFiller(grid: MazeGrid, params: MazeTransmutatio
       const end1 = tryFindNextIntersection(grid, random, x, y, neighbors[0] as Cell)
       const end2 = tryFindNextIntersection(grid, random, x, y, neighbors[1] as Cell)
       if (!end1 || !end2) continue
-      if (end1.x === end2.x && end1.y === end2.y) setCell(grid, x, y, mazeWall)
+      if (end1.x === end2.x && end1.y === end2.y) setCell(grid, x, y, MAZE_WALL)
     }
   }
 }

@@ -9,8 +9,8 @@ import {
   type MazeAlgo,
 } from './mazeGenAlgo.ts'
 import { createSeededRandom, huntOrderOf, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { mazeHuntOrders } from './mazeHuntOrder.ts'
-import { createFilledWalls, isOpen, isWall, mazeOpen, setCell, type MazeGrid } from './mazeGrid.ts'
+import { MAZE_HUNT_ORDERS } from './mazeHuntOrder.ts'
+import { createFilledWalls, isOpen, isWall, MAZE_OPEN, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function move(x: number, y: number, deltaX: number, deltaY: number): Cell {
   return { x: x + deltaX, y: y + deltaY }
@@ -46,7 +46,7 @@ function solveRandomWalk(grid: MazeGrid, walk: Map<string, Cell>, start: Cell): 
   let visits = 0
   let current = start
   while (!isOpen(grid, current.x, current.y)) {
-    setCell(grid, current.x, current.y, mazeOpen)
+    setCell(grid, current.x, current.y, MAZE_OPEN)
     const delta = walk.get(walkKey(current)) as Cell
     const next = move(current.x, current.y, delta.x, delta.y)
     carvePassageBetween(current.x, current.y, next.x, next.y, grid)
@@ -72,10 +72,10 @@ function huntSerpentine(algo: MazeAlgo, grid: MazeGrid): Cell {
 
 export function generateWilsonsMaze(params: MazeGenerationParams): MazeGrid {
   const algo = createMazeAlgo(params.hallwayWidth, params.hallwayHeight, createSeededRandom(params))
-  const serpentine = huntOrderOf(params) === mazeHuntOrders.serpentine
+  const serpentine = huntOrderOf(params) === MAZE_HUNT_ORDERS.serpentine
   const grid = createFilledWalls(algo.hallwayWidth, algo.hallwayHeight)
   const start = randomOddCorridorCell(algo)
-  setCell(grid, start.x, start.y, mazeOpen)
+  setCell(grid, start.x, start.y, MAZE_OPEN)
   let numVisited = 1
   let current =
     serpentine

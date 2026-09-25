@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { fromNorthUpRows, toAscii } from './mazeAscii.ts'
 import { generateMaze } from './mazeGeneratorRegistry.ts'
-import { mazeGeneratorIds, mazeTransmuterIds } from './mazeIds.ts'
-import { mazeHuntOrders } from './mazeHuntOrder.ts'
-import { isOpen, isWall, mazeOpen, type MazeGrid } from './mazeGrid.ts'
+import { MAZE_GENERATOR_IDS, MAZE_TRANSMUTER_IDS } from './mazeIds.ts'
+import { MAZE_HUNT_ORDERS } from './mazeHuntOrder.ts'
+import { isOpen, isWall, MAZE_OPEN, type MazeGrid } from './mazeGrid.ts'
 import fixture from './mazeGolden.fixture.json' with { type: 'json' }
 import { transmuteMaze } from './mazeTransmuterRegistry.ts'
 
@@ -66,44 +66,44 @@ describe('maze ascii', () => {
     const rows = ['#####', '#...#', '#.#.#', '#####']
     const grid = fromNorthUpRows(rows)
     expect(toAscii(grid)).toBe(rows.join('\n'))
-    expect(grid.cells[0]).toBe(mazeOpen === 0 ? 1 : 0)
+    expect(grid.cells[0]).toBe(MAZE_OPEN === 0 ? 1 : 0)
   })
 })
 
 describe('maze generation', () => {
   it('rejects a hallway below 3', () => {
     expect(() =>
-      generateMaze({ ...hallway, hallwayWidth: 2, algorithmId: mazeGeneratorIds.backtracking }),
+      generateMaze({ ...hallway, hallwayWidth: 2, algorithmId: MAZE_GENERATOR_IDS.backtracking }),
     ).toThrow(/at least 3/)
   })
 
   it('repeats the same grid for the same seed', () => {
-    const first = toAscii(generateMaze({ ...hallway, algorithmId: mazeGeneratorIds.wilsons }))
-    const second = toAscii(generateMaze({ ...hallway, algorithmId: mazeGeneratorIds.wilsons }))
+    const first = toAscii(generateMaze({ ...hallway, algorithmId: MAZE_GENERATOR_IDS.wilsons }))
+    const second = toAscii(generateMaze({ ...hallway, algorithmId: MAZE_GENERATOR_IDS.wilsons }))
     expect(first).toBe(second)
   })
 
   it('throws when seed is missing', () => {
     expect(() =>
-      generateMaze({ hallwayWidth: 8, hallwayHeight: 6, algorithmId: mazeGeneratorIds.prims }),
+      generateMaze({ hallwayWidth: 8, hallwayHeight: 6, algorithmId: MAZE_GENERATOR_IDS.prims }),
     ).toThrow(/seed/)
   })
 })
 
 describe('golden mazes', () => {
   const perfect = [
-    mazeGeneratorIds.prims,
-    mazeGeneratorIds.backtracking,
-    mazeGeneratorIds.wilsons,
-    mazeGeneratorIds.kruskals,
-    mazeGeneratorIds.ellers,
-    mazeGeneratorIds.growingTree,
-    mazeGeneratorIds.huntAndKill,
-    mazeGeneratorIds.sidewinder,
-    mazeGeneratorIds.binaryTree,
-    mazeGeneratorIds.recursiveDivision,
-    mazeGeneratorIds.aldousBroder,
-    mazeGeneratorIds.dungeonRooms,
+    MAZE_GENERATOR_IDS.prims,
+    MAZE_GENERATOR_IDS.backtracking,
+    MAZE_GENERATOR_IDS.wilsons,
+    MAZE_GENERATOR_IDS.kruskals,
+    MAZE_GENERATOR_IDS.ellers,
+    MAZE_GENERATOR_IDS.growingTree,
+    MAZE_GENERATOR_IDS.huntAndKill,
+    MAZE_GENERATOR_IDS.sidewinder,
+    MAZE_GENERATOR_IDS.binaryTree,
+    MAZE_GENERATOR_IDS.recursiveDivision,
+    MAZE_GENERATOR_IDS.aldousBroder,
+    MAZE_GENERATOR_IDS.dungeonRooms,
   ]
 
   it.each(perfect)('matches %s and stays connected', (algorithmId) => {
@@ -117,7 +117,7 @@ describe('golden mazes', () => {
     expect(() =>
       generateMaze({
         ...hallway,
-        algorithmId: mazeGeneratorIds.dungeonRooms,
+        algorithmId: MAZE_GENERATOR_IDS.dungeonRooms,
         rooms: [{ minX: 1, minY: 1, maxX: 100, maxY: 100 }],
       }),
     ).toThrow(/do not fit the 17×13 grid/)
@@ -126,8 +126,8 @@ describe('golden mazes', () => {
   it('matches explicit dungeon rooms', () => {
     const grid = generateMaze({
       ...hallway,
-      algorithmId: mazeGeneratorIds.dungeonRooms,
-      huntOrder: mazeHuntOrders.serpentine,
+      algorithmId: MAZE_GENERATOR_IDS.dungeonRooms,
+      huntOrder: MAZE_HUNT_ORDERS.serpentine,
       rooms: [
         { minX: 1, minY: 1, maxX: 5, maxY: 5 },
         { minX: 9, minY: 3, maxX: 13, maxY: 7 },
@@ -141,25 +141,25 @@ describe('golden mazes', () => {
   it('matches sidewinder with a 0.1 skew', () => {
     const grid = generateMaze({
       ...hallway,
-      algorithmId: mazeGeneratorIds.sidewinder,
+      algorithmId: MAZE_GENERATOR_IDS.sidewinder,
       sidewinderSkew: 0.1,
     })
     expect(toAscii(grid)).toBe(fixture.mazes['sidewinder-skew'])
   })
 
   it('matches the cellular automaton ascii', () => {
-    const grid = generateMaze({ ...hallway, algorithmId: mazeGeneratorIds.cellularAutomaton })
+    const grid = generateMaze({ ...hallway, algorithmId: MAZE_GENERATOR_IDS.cellularAutomaton })
     expect(toAscii(grid)).toBe(fixture.mazes['cellular-automaton'])
   })
 
   it('matches transmuters on a Wilson maze', () => {
     const cases = [
-      { id: mazeTransmuterIds.deadEndFiller, deadEndIterations: 3, key: 'dead-end-filler' },
-      { id: mazeTransmuterIds.culdeSacFiller, key: 'cul-de-sac-filler' },
-      { id: mazeTransmuterIds.perturbation, key: 'perturbation' },
+      { id: MAZE_TRANSMUTER_IDS.deadEndFiller, deadEndIterations: 3, key: 'dead-end-filler' },
+      { id: MAZE_TRANSMUTER_IDS.culdeSacFiller, key: 'cul-de-sac-filler' },
+      { id: MAZE_TRANSMUTER_IDS.perturbation, key: 'perturbation' },
     ]
     for (const entry of cases) {
-      const grid = generateMaze({ ...hallway, algorithmId: mazeGeneratorIds.wilsons })
+      const grid = generateMaze({ ...hallway, algorithmId: MAZE_GENERATOR_IDS.wilsons })
       transmuteMaze(grid, { seed: 42, transmuterId: entry.id, deadEndIterations: entry.deadEndIterations })
       expect(toAscii(grid)).toBe(fixture.mazes[entry.key as keyof typeof fixture.mazes])
     }

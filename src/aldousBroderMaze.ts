@@ -9,13 +9,13 @@ import {
   randomOddCorridorCell,
 } from './mazeGenAlgo.ts'
 import { createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createFilledWalls, isWall, mazeOpen, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createFilledWalls, isWall, MAZE_OPEN, setCell, type MazeGrid } from './mazeGrid.ts'
 
 export function generateAldousBroderMaze(params: MazeGenerationParams): MazeGrid {
   const algo = createMazeAlgo(params.hallwayWidth, params.hallwayHeight, createSeededRandom(params))
   const grid = createFilledWalls(algo.hallwayWidth, algo.hallwayHeight)
   let current = randomOddCorridorCell(algo)
-  setCell(grid, current.x, current.y, mazeOpen)
+  setCell(grid, current.x, current.y, MAZE_OPEN)
   let numVisited = 1
 
   while (numVisited < algo.hallwayWidth * algo.hallwayHeight) {
@@ -28,7 +28,7 @@ export function generateAldousBroderMaze(params: MazeGenerationParams): MazeGrid
     for (const neighbor of neighbors) {
       if (!isWall(grid, neighbor.x, neighbor.y)) continue
       carvePassageBetween(current.x, current.y, neighbor.x, neighbor.y, grid)
-      setCell(grid, neighbor.x, neighbor.y, mazeOpen)
+      setCell(grid, neighbor.x, neighbor.y, MAZE_OPEN)
       numVisited += 1
       current = neighbor
       break

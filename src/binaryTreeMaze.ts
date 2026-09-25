@@ -2,15 +2,15 @@
 // https://github.com/john-science/mazelib/blob/main/mazelib/generate/BinaryTree.py
 
 import type { Cell } from './intPairSet.ts'
-import { mazeBinaryTreeSkews, type MazeBinaryTreeSkew } from './mazeBinaryTreeSkew.ts'
+import { MAZE_BINARY_TREE_SKEWS, type MazeBinaryTreeSkew } from './mazeBinaryTreeSkew.ts'
 import { createMazeAlgo } from './mazeGenAlgo.ts'
 import { binaryTreeSkewOf, createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createFilledWalls, mazeOpen, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createFilledWalls, MAZE_OPEN, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function skewOffsets(skew: MazeBinaryTreeSkew): Cell[] {
-  if (skew === mazeBinaryTreeSkews.northEast) return [{ x: 1, y: 0 }, { x: 0, y: 1 }]
-  if (skew === mazeBinaryTreeSkews.southWest) return [{ x: -1, y: 0 }, { x: 0, y: -1 }]
-  if (skew === mazeBinaryTreeSkews.southEast) return [{ x: 1, y: 0 }, { x: 0, y: -1 }]
+  if (skew === MAZE_BINARY_TREE_SKEWS.northEast) return [{ x: 1, y: 0 }, { x: 0, y: 1 }]
+  if (skew === MAZE_BINARY_TREE_SKEWS.southWest) return [{ x: -1, y: 0 }, { x: 0, y: -1 }]
+  if (skew === MAZE_BINARY_TREE_SKEWS.southEast) return [{ x: 1, y: 0 }, { x: 0, y: -1 }]
   return [{ x: -1, y: 0 }, { x: 0, y: 1 }]
 }
 
@@ -21,7 +21,7 @@ export function generateBinaryTreeMaze(params: MazeGenerationParams): MazeGrid {
 
   for (let y = 1; y < algo.physicalHeight; y += 2) {
     for (let x = 1; x < algo.physicalWidth; x += 2) {
-      setCell(grid, x, y, mazeOpen)
+      setCell(grid, x, y, MAZE_OPEN)
       const neighbors: Cell[] = []
       for (const delta of offsets) {
         const neighborX = x + delta.x
@@ -37,7 +37,7 @@ export function generateBinaryTreeMaze(params: MazeGenerationParams): MazeGrid {
       }
       const neighbor =
         neighbors.length === 0 ? { x, y } : (neighbors[algo.random.nextMax(neighbors.length)] as Cell)
-      setCell(grid, neighbor.x, neighbor.y, mazeOpen)
+      setCell(grid, neighbor.x, neighbor.y, MAZE_OPEN)
     }
   }
   return grid

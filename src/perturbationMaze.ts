@@ -3,7 +3,7 @@
 import { createIntPairSet, type Cell, type IntPairSet } from './intPairSet.ts'
 import { findLatticeNeighbors, findUnblockedNeighbors, midpoint } from './mazeTransmuteAlgo.ts'
 import { createTransmuteRandom, type MazeTransmutationParams } from './mazeTransmutationParams.ts'
-import { isOpen, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { isOpen, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function intersects(left: IntPairSet, right: IntPairSet): boolean {
   for (const cell of right.toArray()) {
@@ -59,7 +59,7 @@ function tryForceMerge(grid: MazeGrid, random: ReturnType<typeof createTransmute
         const passage = passages[passageIndex] as IntPairSet
         if (!passage.has(neighbor.x, neighbor.y)) continue
         const mid = midpoint(neighbor, cell)
-        setCell(grid, mid.x, mid.y, mazeOpen)
+        setCell(grid, mid.x, mid.y, MAZE_OPEN)
         first.unionWith(passage)
         passages.splice(passageIndex, 1)
         return true
@@ -87,7 +87,7 @@ function reconnect(grid: MazeGrid, random: ReturnType<typeof createTransmuteRand
       for (const neighbor of neighbors) {
         if (!passage.has(neighbor.x, neighbor.y)) continue
         const mid = midpoint(neighbor, cell)
-        setCell(grid, mid.x, mid.y, mazeOpen)
+        setCell(grid, mid.x, mid.y, MAZE_OPEN)
         first.unionWith(passage)
         passages.splice(passageIndex, 1)
         found = true
@@ -114,7 +114,7 @@ function addRandomWall(grid: MazeGrid, random: ReturnType<typeof createTransmute
       x = evenCount > 0 ? random.nextMax(evenCount) * 2 + 2 : 2
     }
     if (isOpen(grid, x, y)) {
-      setCell(grid, x, y, mazeWall)
+      setCell(grid, x, y, MAZE_WALL)
       return
     }
   }

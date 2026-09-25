@@ -4,7 +4,7 @@
 import type { DotNetRandom } from './dotNetRandom.ts'
 import { carvePassageBetween, createMazeAlgo, findNeighbors } from './mazeGenAlgo.ts'
 import { createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createMazeGrid, isOpen, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createMazeGrid, isOpen, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function randomEvenCoordinate(random: DotNetRandom, minInclusive: number, maxInclusive: number): number {
   return minInclusive + random.nextMax(Math.trunc((maxInclusive - minInclusive) / 2) + 1) * 2
@@ -15,14 +15,14 @@ export function generateCellularAutomatonMaze(params: MazeGenerationParams): Maz
   let complexity = Math.fround(params.cellularComplexity ?? 1)
   let density = Math.fround(params.cellularDensity ?? 1)
   const grid = createMazeGrid(algo.hallwayWidth, algo.hallwayHeight)
-  grid.cells.fill(mazeOpen)
+  grid.cells.fill(MAZE_OPEN)
   for (let x = 0; x < algo.physicalWidth; x += 1) {
-    setCell(grid, x, 0, mazeWall)
-    setCell(grid, x, algo.physicalHeight - 1, mazeWall)
+    setCell(grid, x, 0, MAZE_WALL)
+    setCell(grid, x, algo.physicalHeight - 1, MAZE_WALL)
   }
   for (let y = 0; y < algo.physicalHeight; y += 1) {
-    setCell(grid, 0, y, mazeWall)
-    setCell(grid, algo.physicalWidth - 1, y, mazeWall)
+    setCell(grid, 0, y, MAZE_WALL)
+    setCell(grid, algo.physicalWidth - 1, y, MAZE_WALL)
   }
 
   if (complexity <= 1) complexity = Math.fround(complexity * (algo.hallwayHeight + algo.hallwayWidth))
@@ -45,7 +45,7 @@ export function generateCellularAutomatonMaze(params: MazeGenerationParams): Maz
       y = randomEvenCoordinate(algo.random, 0, algo.physicalHeight - 1)
       x = randomEvenCoordinate(algo.random, 0, algo.physicalWidth - 1)
     }
-    setCell(grid, x, y, mazeWall)
+    setCell(grid, x, y, MAZE_WALL)
     for (let j = 0; j < complexitySteps; j += 1) {
       const wallNeighbors = findNeighbors(algo, x, y, grid, true)
       if (wallNeighbors.length > 0 && wallNeighbors.length < 4) {
@@ -53,7 +53,7 @@ export function generateCellularAutomatonMaze(params: MazeGenerationParams): Maz
         if (openNeighbors.length === 0) continue
         const next = openNeighbors[algo.random.nextMax(openNeighbors.length)] as { x: number; y: number }
         if (isOpen(grid, next.x, next.y)) {
-          setCell(grid, next.x, next.y, mazeWall)
+          setCell(grid, next.x, next.y, MAZE_WALL)
           carvePassageBetween(x, y, next.x, next.y, grid)
           x = next.x
           y = next.y

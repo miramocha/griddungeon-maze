@@ -3,7 +3,7 @@
 import type { DotNetRandom } from './dotNetRandom.ts'
 import { findUnblockedNeighbors, isWithinOne } from './mazeTransmuteAlgo.ts'
 import { createTransmuteRandom, type MazeTransmutationParams } from './mazeTransmutationParams.ts'
-import { getCell, isWall, mazeOpen, mazeWall, setCell, type MazeGrid } from './mazeGrid.ts'
+import { getCell, isWall, MAZE_OPEN, MAZE_WALL, setCell, type MazeGrid } from './mazeGrid.ts'
 
 function isDeadEnd(grid: MazeGrid, random: DotNetRandom, x: number, y: number): boolean {
   if (isWall(grid, x, y)) return false
@@ -35,11 +35,11 @@ export function transmuteDeadEndFiller(grid: MazeGrid, params: MazeTransmutation
   let endSave = 0
   if (startX != null && startY != null) {
     startSave = getCell(grid, startX, startY)
-    setCell(grid, startX, startY, mazeOpen)
+    setCell(grid, startX, startY, MAZE_OPEN)
   }
   if (endX != null && endY != null) {
     endSave = getCell(grid, endX, endY)
-    setCell(grid, endX, endY, mazeOpen)
+    setCell(grid, endX, endY, MAZE_OPEN)
   }
 
   const iterations = (params.deadEndIterations ?? 1) > 0 ? (params.deadEndIterations ?? 1) : 100
@@ -56,11 +56,11 @@ export function transmuteDeadEndFiller(grid: MazeGrid, params: MazeTransmutation
       found = true
       const x = deadEnd.x
       const y = deadEnd.y
-      setCell(grid, x, y, mazeWall)
-      setCell(grid, x, y - 1, mazeWall)
-      setCell(grid, x, y + 1, mazeWall)
-      setCell(grid, x - 1, y, mazeWall)
-      setCell(grid, x + 1, y, mazeWall)
+      setCell(grid, x, y, MAZE_WALL)
+      setCell(grid, x, y - 1, MAZE_WALL)
+      setCell(grid, x, y + 1, MAZE_WALL)
+      setCell(grid, x - 1, y, MAZE_WALL)
+      setCell(grid, x + 1, y, MAZE_WALL)
       const neighbors = findUnblockedNeighbors(grid, random, x, y)
       if (neighbors.length === 0) break
       const only = neighbors[0]

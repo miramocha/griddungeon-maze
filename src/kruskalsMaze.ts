@@ -4,7 +4,7 @@
 import type { Cell } from './intPairSet.ts'
 import { createMazeAlgo, shuffle } from './mazeGenAlgo.ts'
 import { createSeededRandom, type MazeGenerationParams } from './mazeGenerationParams.ts'
-import { createFilledWalls, mazeOpen, setCell, type MazeGrid } from './mazeGrid.ts'
+import { createFilledWalls, MAZE_OPEN, setCell, type MazeGrid } from './mazeGrid.ts'
 
 export function generateKruskalsMaze(params: MazeGenerationParams): MazeGrid {
   const algo = createMazeAlgo(params.hallwayWidth, params.hallwayHeight, createSeededRandom(params))
@@ -15,7 +15,7 @@ export function generateKruskalsMaze(params: MazeGenerationParams): MazeGrid {
 
   const grid = createFilledWalls(algo.hallwayWidth, algo.hallwayHeight)
   for (let y = 1; y < algo.physicalHeight - 1; y += 2) {
-    for (let x = 1; x < algo.physicalWidth - 1; x += 2) setCell(grid, x, y, mazeOpen)
+    for (let x = 1; x < algo.physicalWidth - 1; x += 2) setCell(grid, x, y, MAZE_OPEN)
   }
 
   const edges: Cell[] = []
@@ -65,7 +65,7 @@ export function generateKruskalsMaze(params: MazeGenerationParams): MazeGrid {
     if (rootA === rootB) continue
     union(rootA, rootB)
     disjointSets -= 1
-    setCell(grid, edge.x, edge.y, mazeOpen)
+    setCell(grid, edge.x, edge.y, MAZE_OPEN)
     if (disjointSets <= 1) break
   }
   return grid
