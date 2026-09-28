@@ -1,4 +1,5 @@
 export { createDotNetRandom, type DotNetRandom } from './dotNetRandom.ts'
+export { placeFloorPortals, type FloorPortals } from './floorPortals.ts'
 export { createIntPairSet, type Cell, type IntPairSet } from './intPairSet.ts'
 export { fromNorthUpRows, toAscii, toAsciiRows } from './mazeAscii.ts'
 export { MAZE_BINARY_TREE_SKEWS, type MazeBinaryTreeSkew } from './mazeBinaryTreeSkew.ts'
