@@ -8,14 +8,20 @@ import type { Cell } from './intPairSet.ts'
 
 const hallway = { hallwayWidth: 8, hallwayHeight: 6, seed: 42, algorithmId: MAZE_GENERATOR_IDS.backtracking }
 
-function pathDistance(grid: MazeGrid, from: Cell, to: Cell): number {
+function farthestReach(grid: MazeGrid, from: Cell): { distance: number; at: Cell[] } {
   const queue: Array<{ cell: Cell; distance: number }> = [{ cell: from, distance: 0 }]
   const seen = new Set<string>([`${from.x},${from.y}`])
   let head = 0
+  let distance = -1
+  const at: Cell[] = []
   while (head < queue.length) {
     const current = queue[head] as { cell: Cell; distance: number }
     head += 1
-    if (current.cell.x === to.x && current.cell.y === to.y) return current.distance
+    if (current.distance > distance) {
+      distance = current.distance
+      at.length = 0
+    }
+    if (current.distance === distance) at.push(current.cell)
     for (const step of [
       { x: 1, y: 0 },
       { x: -1, y: 0 },
@@ -32,7 +38,7 @@ function pathDistance(grid: MazeGrid, from: Cell, to: Cell): number {
       queue.push({ cell: { x, y }, distance: current.distance + 1 })
     }
   }
-  return -1
+  return { distance, at }
 }
 
 describe('placeFloorPortals', () => {
@@ -42,7 +48,9 @@ describe('placeFloorPortals', () => {
     expect(isOpen(grid, portals.entrance.x, portals.entrance.y)).toBe(true)
     expect(isOpen(grid, portals.exit.x, portals.exit.y)).toBe(true)
     expect(portals.entrance).not.toEqual(portals.exit)
-    expect(portals.distance).toBe(pathDistance(grid, portals.entrance, portals.exit))
+    const reach = farthestReach(grid, portals.entrance)
+    expect(portals.distance).toBe(reach.distance)
+    expect(reach.at).toContainEqual(portals.exit)
     expect(portals.distance).toBeGreaterThan(0)
   })
 

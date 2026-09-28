@@ -45,7 +45,7 @@ function farthestOpen(grid: MazeGrid, origin: Cell): { cell: Cell; distance: num
   let bestDistance = 0
   while (head < queue.length) {
     const current = queue[head] as Cell
-    const currentDistance = distances[indexOf(grid, current.x, current.y)] ?? 0
+    const currentDistance = distances[indexOf(grid, current.x, current.y)]
     head += 1
     if (prefers(grid, current, currentDistance, best, bestDistance)) {
       best = current
