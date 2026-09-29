@@ -1,4 +1,4 @@
-import { placeFloorPortals, type FloorPortals } from './floorPortals.ts'
+import { cellDistance, placeFloorPortals, type FloorPortals } from './floorPortals.ts'
 import type { Cell } from './intPairSet.ts'
 import { generateMaze } from './mazeGeneratorRegistry.ts'
 import { MAZE_TRANSMUTER_IDS } from './mazeIds.ts'
@@ -30,17 +30,21 @@ export function buildMazeFloor(request: MazeFloorRequest): MazeFloor {
   if (transmute?.transmuterId === MAZE_TRANSMUTER_IDS.perturbation) transmuteMaze(grid, transmute)
   const placed = placeFloorPortals(grid)
   const override = request.portalOverride
-  const portals: FloorPortals = override
-    ? { entrance: { ...override.entrance }, exit: { ...override.exit }, distance: placed.distance }
-    : placed
+  const entrance = override ? { ...override.entrance } : placed.entrance
+  const exit = override ? { ...override.exit } : placed.exit
   if (transmute && transmute.transmuterId !== MAZE_TRANSMUTER_IDS.perturbation) {
     transmuteMaze(grid, {
       ...transmute,
-      startX: portals.entrance.x,
-      startY: portals.entrance.y,
-      endX: portals.exit.x,
-      endY: portals.exit.y,
+      startX: entrance.x,
+      startY: entrance.y,
+      endX: exit.x,
+      endY: exit.y,
     })
+  }
+  const portals: FloorPortals = {
+    entrance,
+    exit,
+    distance: cellDistance(grid, entrance, exit),
   }
   return { grid, portals }
 }

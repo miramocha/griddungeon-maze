@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { placeFloorPortals } from './floorPortals.ts'
+import { cellDistance, placeFloorPortals } from './floorPortals.ts'
 import { fromNorthUpRows } from './mazeAscii.ts'
 import { generateMaze } from './mazeGeneratorRegistry.ts'
 import { createFilledWalls, isOpen, type MazeGrid } from './mazeGrid.ts'
@@ -50,8 +50,15 @@ describe('placeFloorPortals', () => {
     expect(portals.entrance).not.toEqual(portals.exit)
     const reach = farthestReach(grid, portals.entrance)
     expect(portals.distance).toBe(reach.distance)
+    expect(portals.distance).toBe(cellDistance(grid, portals.entrance, portals.exit))
     expect(reach.at).toContainEqual(portals.exit)
     expect(portals.distance).toBeGreaterThan(0)
+  })
+
+  it('reports 0 when either cell is closed', () => {
+    const grid = createFilledWalls(3, 3)
+    expect(cellDistance(grid, { x: 0, y: 0 }, { x: 1, y: 1 })).toBe(0)
+    expect(cellDistance(grid, { x: -1, y: 0 }, { x: 1, y: 1 })).toBe(0)
   })
 
   it('prefers the dead end when two cells share the max distance', () => {

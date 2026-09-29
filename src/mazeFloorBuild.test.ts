@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { buildMazeFloor } from './mazeFloorBuild.ts'
 import { MAZE_GENERATOR_IDS, MAZE_TRANSMUTER_IDS } from './mazeIds.ts'
 import { isOpen } from './mazeGrid.ts'
-import { placeFloorPortals } from './floorPortals.ts'
+import { cellDistance, placeFloorPortals } from './floorPortals.ts'
 
 const generation = {
   algorithmId: MAZE_GENERATOR_IDS.backtracking,
@@ -18,15 +18,16 @@ describe('buildMazeFloor', () => {
     expect(isOpen(floor.grid, floor.portals.entrance.x, floor.portals.entrance.y)).toBe(true)
   })
 
-  it('keeps an entrance and exit override and the placed distance', () => {
+  it('measures an override on the finished grid', () => {
     const plain = buildMazeFloor({ generation })
     const floor = buildMazeFloor({
       generation,
-      portalOverride: { entrance: { x: 1, y: 1 }, exit: { x: 3, y: 1 } },
+      portalOverride: { entrance: { x: 0, y: 0 }, exit: { x: 1, y: 0 } },
     })
-    expect(floor.portals.entrance).toEqual({ x: 1, y: 1 })
-    expect(floor.portals.exit).toEqual({ x: 3, y: 1 })
-    expect(floor.portals.distance).toBe(plain.portals.distance)
+    expect(floor.portals.entrance).toEqual({ x: 0, y: 0 })
+    expect(floor.portals.exit).toEqual({ x: 1, y: 0 })
+    expect(floor.portals.distance).toBe(cellDistance(floor.grid, floor.portals.entrance, floor.portals.exit))
+    expect(floor.portals.distance).not.toBe(plain.portals.distance)
   })
 
   it('runs perturbation before portals and fillers after', () => {

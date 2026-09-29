@@ -25,6 +25,37 @@ export function placeFloorPortals(grid: MazeGrid): FloorPortals {
   return { entrance: entrance.cell, exit: exit.cell, distance: exit.distance }
 }
 
+/** Open-cell steps from `from` to `to`. Closed, out of range, or unreachable cells are 0. */
+export function cellDistance(grid: MazeGrid, from: Cell, to: Cell): number {
+  if (!inside(grid, from.x, from.y) || !inside(grid, to.x, to.y)) return 0
+  if (!isOpen(grid, from.x, from.y) || !isOpen(grid, to.x, to.y)) return 0
+  if (from.x === to.x && from.y === to.y) return 0
+  const seen = new Uint8Array(grid.width * grid.height)
+  const queue: Array<{ x: number; y: number; distance: number }> = [{ x: from.x, y: from.y, distance: 0 }]
+  seen[indexOf(grid, from.x, from.y)] = 1
+  let head = 0
+  while (head < queue.length) {
+    const current = queue[head]
+    head += 1
+    if (!current) continue
+    if (current.x === to.x && current.y === to.y) return current.distance
+    for (const step of NEIGHBORS) {
+      const x = current.x + step.x
+      const y = current.y + step.y
+      if (!inside(grid, x, y) || !isOpen(grid, x, y)) continue
+      const index = indexOf(grid, x, y)
+      if (seen[index]) continue
+      seen[index] = 1
+      queue.push({ x, y, distance: current.distance + 1 })
+    }
+  }
+  return 0
+}
+
+function inside(grid: MazeGrid, x: number, y: number): boolean {
+  return x >= 0 && y >= 0 && x < grid.width && y < grid.height
+}
+
 function firstOpen(grid: MazeGrid): Cell | null {
   // Y = 0 is south. Row-major order picks the south-most open cell, then the west-most.
   for (let y = 0; y < grid.height; y += 1) {
