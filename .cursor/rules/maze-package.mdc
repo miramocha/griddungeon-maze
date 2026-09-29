@@ -1,0 +1,22 @@
+---
+description: Maze package is records and functions in meter space, with no engine types
+alwaysApply: true
+---
+
+# Maze package
+
+Records and functions. No Three.js, no React, no `Quaternion`, no `Matrix4`.
+
+## Do
+
+- Meter frame is +X east, +Y up, −Z north. Tile yaw is quarter-turns 0..3.
+- `buildMazeFloor` order: generate, perturbation, portals, then any other transmute. Portal override replaces both cells or neither.
+- `portals.distance` is `cellDistance` after that transmute. Closed, out of range, or unreachable cells are 0.
+- `clampMazeStep` takes `cellM` and `wallSkirt` in meters. Callers own the authored cell size and the skirt.
+- Placement positions are unshifted maze space. Kinds are `floor`, `wall`, `column`, `floorGap`, and `elevator`.
+
+## Do not
+
+- Add a handedness parameter.
+- Read tileset JSON, GLB node names, or asset pak keys.
+- Keep a generated portal distance after an override replaces the cells.
